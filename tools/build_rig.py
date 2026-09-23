@@ -303,7 +303,7 @@ parent_to(sph('Bell', 0.024, (0.365, 0.255, 0.985), PAL['gold'], scale=(1, 1, 0.
 
 # ---------------- 座垫 + 座管 + 水壶
 parent_to(cyl('Seatpost', 0.016, 0.16, (-0.295, 0, 1.01), PAL['rim'], rot=(0, R(-6), 0), verts=12), BIKE)
-saddle = sph('Saddle', 1.0, (-0.285, 0, 1.085), PAL['leather'], scale=(0.175, 0.115, 0.05), subdiv=2)
+saddle = sph('Saddle', 1.0, (-0.285, 0, 1.085), PAL['leather'], scale=(0.175, 0.115, 0.05), subdiv=1)
 bm = bmesh.new(); bm.from_mesh(saddle.data)   # 单位球局部坐标
 for v in bm.verts:
     t = (v.co.x + 1) / 2                       # 0=尾 1=鼻
@@ -390,8 +390,8 @@ Rider = empty('Rider', HIP, BIKE)
 # ---------------- 躯干 + 尾羽
 TorsoP = empty('TorsoPivot', (HIP[0] + 0.02, 0, HIP[2] + 0.05), Rider)
 torso = [
-    sph('torso_main', 1.0, (-0.02, 0, 1.205), PAL['bodyW'], scale=(0.30, 0.185, 0.215), rot=(0, R(-12), 0), seg=36, rings=20, subdiv=2),
-    sph('torso_chest', 1.0, (0.16, 0, 1.16), PAL['belly'], scale=(0.17, 0.145, 0.16), rot=(0, R(-12), 0), seg=28, rings=16, subdiv=2),
+    sph('torso_main', 1.0, (-0.02, 0, 1.205), PAL['bodyW'], scale=(0.30, 0.185, 0.215), rot=(0, R(-12), 0), seg=28, rings=16, subdiv=1),
+    sph('torso_chest', 1.0, (0.16, 0, 1.16), PAL['belly'], scale=(0.17, 0.145, 0.16), rot=(0, R(-12), 0), seg=24, rings=14, subdiv=1),
     sph('torso_rump', 1.0, (-0.22, 0, 1.17), PAL['bodyW'], scale=(0.15, 0.13, 0.14), seg=24, rings=14, subdiv=1),
 ]
 tail = []
@@ -406,9 +406,9 @@ parent_to(join(torso, 'Torso'), TorsoP)
 Neck = empty('Neck', (0.085, 0, 1.285), Rider)
 parent_to(tube('neck_tube',
                [(0.085, 0, 1.285), (0.155, 0, 1.40), (0.245, 0, 1.495), (0.325, 0, 1.545)],
-               [0.082, 0.062, 0.052, 0.048], PAL['neckW'], res=6, subdiv=2), Neck)
+               [0.082, 0.062, 0.052, 0.048], PAL['neckW'], res=6, subdiv=1), Neck)
 Head = empty('Head', (0.325, 0, 1.545), Neck)
-parent_to(sph('head_main', 1.0, (0.368, 0, 1.585), PAL['bodyW'], scale=(0.088, 0.064, 0.078), seg=28, rings=16, subdiv=2), Head)
+parent_to(sph('head_main', 1.0, (0.368, 0, 1.585), PAL['bodyW'], scale=(0.088, 0.064, 0.078), seg=24, rings=14, subdiv=1), Head)
 parent_to(sph('head_crown', 1.0, (0.35, 0, 1.618), PAL['bodyW'], scale=(0.06, 0.055, 0.045), seg=20, rings=10, subdiv=1), Head)
 
 # 眼睛（两侧鼓出的鸟眼）
@@ -428,7 +428,7 @@ parent_to(cyl('beak_hook', 0.008, 0.024, (0.780, 0, 1.522), PAL['beakTip'], rot=
 
 # 喉囊（Pouch 空物体 = 下巴铰链；honk 膨胀 + 常态弹簧抖动）
 Pouch = empty('Pouch', (0.408, 0, 1.545), Head)
-pouch_m = sph('pouch_main', 1.0, (0.555, 0, 1.468), PAL['pouch'], scale=(0.150, 0.052, 0.078), rot=(0, R(8), 0), seg=28, rings=16, subdiv=2)
+pouch_m = sph('pouch_main', 1.0, (0.555, 0, 1.468), PAL['pouch'], scale=(0.150, 0.052, 0.078), rot=(0, R(8), 0), seg=24, rings=14, subdiv=1)
 bm = bmesh.new(); bm.from_mesh(pouch_m.data)   # 单位球局部坐标
 for v in bm.verts:
     t = (v.co.x + 1) / 2                       # 0=靠下巴 1=喙尖方向
@@ -485,7 +485,7 @@ def build_leg(side):
     Thigh = empty('Thigh' + side, (HIP[0], yb, HIP[2]), Rider)
     parent_to(join([
         cyl('thigh', 0.034, THIGH_LEN * 0.92, (HIP[0] + 0.005, yb, HIP[2] - THIGH_LEN / 2),
-            PAL['bodyW'], verts=16, r2=0.055, subdiv=2),
+            PAL['bodyW'], verts=16, r2=0.055, subdiv=1),
         sph('thigh_top', 0.058, (HIP[0] + 0.005, yb, HIP[2] - 0.02), PAL['bodyW'], scale=(1, 0.9, 1), seg=16, rings=10, subdiv=1),
     ], 'ThighGeo' + side), Thigh)
     knee = (HIP[0] + 0.01, yb, HIP[2] - THIGH_LEN)

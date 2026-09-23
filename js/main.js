@@ -47,13 +47,16 @@ let tipI = 0;
 const tipTimer = setInterval(() => { tipI = (tipI + 1) % tips.length; $('load-tip').textContent = tips[tipI]; }, 900);
 
 const loader = new GLTFLoader();
-let loaded = 0;
-function progress() {
-  loaded++;
-  $('load-fill').style.width = (loaded / 2 * 100).toFixed(0) + '%';
+// 按字节显示进度（GLB 有几 MB，慢网上给用户看得见的百分比）
+const bytes = {};
+function progress(url, ev) {
+  if (ev && ev.lengthComputable) bytes[url] = ev.loaded;
+  const done = (bytes['assets/rig.glb'] || 0) + (bytes['assets/props.glb'] || 0);
+  const total = 5900000;   // 两 GLB 合计约 5.9MB，未知总量时按此估算
+  $('load-fill').style.width = Math.min(99, done / total * 100).toFixed(0) + '%';
 }
 function loadGLB(url) {
-  return new Promise((res, rej) => loader.load(url, (g) => { progress(); res(g); }, undefined, rej));
+  return new Promise((res, rej) => loader.load(url, (g) => { progress(url, null); res(g); }, (ev) => progress(url, ev), rej));
 }
 
 const st = createRigState();
